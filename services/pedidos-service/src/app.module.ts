@@ -15,13 +15,13 @@ import { HealthController } from './health.controller';
       playground: true,
     }),
     TypeOrmModule.forRoot({
-      type: 'sqlite',
-      database: process.env.DB_PATH || '/data/pedidos.db',
+      type: 'better-sqlite3',
+      database: process.env.DB_PATH || './pedidos.db',
       entities: [Pedido],
       synchronize: true,
     }),
+    PedidosModule,
   ],
   controllers: [HealthController],
-  providers: [PedidosModule],
 })
 export class AppModule {}

@@ -45,6 +45,6 @@ export class PedidosService {
 
   async eliminar(id: string): Promise<boolean> {
     const result = await this.pedidosRepository.delete(id);
-    return result.affected > 0;
+    return (result.affected ?? 0) > 0;
   }
 }

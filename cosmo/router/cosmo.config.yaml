@@ -12,6 +12,10 @@ router:
     enabled: true
     path: /health
 
+# Configuración estática (sin graph token)
+execution_config:
+  file: /etc/cosmo/router/execution-config.json
+
 # Configuración de telemetría
 telemetry:
   enabled: false

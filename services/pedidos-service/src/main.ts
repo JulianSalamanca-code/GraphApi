@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
-import * as consul from 'consul';
+import Consul from 'consul';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -12,7 +12,7 @@ async function bootstrap() {
   
   // Registro en Consul
   const consulHost = process.env.CONSUL_HOST || 'localhost';
-  const consulClient = new consul({ host: consulHost, port: 8500 });
+  const consulClient = new Consul({ host: consulHost, port: 8500 });
   
   consulClient.agent.service.register({
     name: 'pedidos-service',
