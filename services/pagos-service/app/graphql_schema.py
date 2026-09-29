@@ -1,81 +1,122 @@
-import graphene
-from graphene_sqlalchemy import SQLAlchemyObjectType
+import strawberry
+from strawberry.federation import Schema
+from strawberry.types import Info
 from app.models import Pago
 
-class PagoType(SQLAlchemyObjectType):
-    class Meta:
-        model = Pago
-        interfaces = (graphene.relay.Node, )
-    
-    id = graphene.ID(required=True)
-    monto = graphene.Float(required=True)
-    metodo = graphene.String(required=True)
-    estado = graphene.String(required=True)
-    referencia = graphene.String()
-    orden_id = graphene.ID(required=True)
-    creado_en = graphene.String(required=True)
-    actualizado_en = graphene.String(required=True)
 
-class Query(graphene.ObjectType):
-    pagos = graphene.List(PagoType, orden_id=graphene.ID())
-    pago = graphene.Field(PagoType, id=graphene.ID(required=True))
-    
-    def resolve_pagos(self, info, orden_id=None):
-        query = PagoType.get_query(info)
-        if orden_id:
-            query = query.filter(Pago.orden_id == orden_id)
-        return query.all()
-    
-    def resolve_pago(self, info, id):
-        query = PagoType.get_query(info)
-        return query.filter(Pago.id == id).first()
+@strawberry.type
+class PagoType:
+    id: str
+    monto: float
+    metodo: str
+    estado: str
+    referencia: str | None
+    ordenId: str
+    creadoEn: str
+    actualizadoEn: str
 
-class CrearPagoInput(graphene.InputObjectType):
-    monto = graphene.Float(required=True)
-    metodo = graphene.String(required=True)
-    referencia = graphene.String()
-    orden_id = graphene.ID(required=True)
 
-class CrearPago(graphene.Mutation):
-    class Arguments:
-        input = CrearPagoInput(required=True)
-    
-    pago = graphene.Field(PagoType)
-    
-    def mutate(self, info, input):
-        from app.models import Pago
+@strawberry.type
+class Query:
+    @strawberry.field
+    def pagos(self, info: Info, ordenId: str | None = None) -> list[PagoType]:
+        query = Pago.query
+        if ordenId:
+            query = query.filter(Pago.orden_id == ordenId)
+        return [
+            PagoType(
+                id=p.id,
+                monto=p.monto,
+                metodo=p.metodo,
+                estado=p.estado,
+                referencia=p.referencia,
+                ordenId=p.orden_id,
+                creadoEn=p.creado_en.isoformat(),
+                actualizadoEn=p.actualizado_en.isoformat(),
+            )
+            for p in query.all()
+        ]
+
+    @strawberry.field
+    def pago(self, info: Info, id: str) -> PagoType | None:
+        p = Pago.query.get(id)
+        if not p:
+            return None
+        return PagoType(
+            id=p.id,
+            monto=p.monto,
+            metodo=p.metodo,
+            estado=p.estado,
+            referencia=p.referencia,
+            ordenId=p.orden_id,
+            creadoEn=p.creado_en.isoformat(),
+            actualizadoEn=p.actualizado_en.isoformat(),
+        )
+
+
+@strawberry.input
+class CrearPagoInput:
+    monto: float
+    metodo: str
+    referencia: str | None = None
+    ordenId: str
+
+
+@strawberry.type
+class CrearPagoPayload:
+    pago: PagoType
+
+
+@strawberry.input
+class ActualizarPagoInput:
+    monto: float | None = None
+    metodo: str | None = None
+    estado: str | None = None
+    referencia: str | None = None
+    ordenId: str | None = None
+
+
+@strawberry.type
+class ActualizarPagoPayload:
+    pago: PagoType
+
+
+@strawberry.type
+class EliminarPagoPayload:
+    success: bool
+
+
+@strawberry.type
+class Mutation:
+    @strawberry.mutation
+    def crearPago(self, info: Info, input: CrearPagoInput) -> CrearPagoPayload:
+        from app import db
         pago = Pago(
             monto=input.monto,
             metodo=input.metodo,
             estado='PENDIENTE',
             referencia=input.referencia,
-            orden_id=input.orden_id
+            orden_id=input.ordenId,
         )
-        from app import db
         db.session.add(pago)
         db.session.commit()
-        return CrearPago(pago=pago)
+        return CrearPagoPayload(pago=PagoType(
+            id=pago.id,
+            monto=pago.monto,
+            metodo=pago.metodo,
+            estado=pago.estado,
+            referencia=pago.referencia,
+            ordenId=pago.orden_id,
+            creadoEn=pago.creado_en.isoformat(),
+            actualizadoEn=pago.actualizado_en.isoformat(),
+        ))
 
-class ActualizarPagoInput(graphene.InputObjectType):
-    monto = graphene.Float()
-    metodo = graphene.String()
-    estado = graphene.String()
-    referencia = graphene.String()
-
-class ActualizarPago(graphene.Mutation):
-    class Arguments:
-        id = graphene.ID(required=True)
-        input = ActualizarPagoInput(required=True)
-    
-    pago = graphene.Field(PagoType)
-    
-    def mutate(self, info, id, input):
-        from app.models import Pago
+    @strawberry.mutation
+    def actualizarPago(self, info: Info, id: str, input: ActualizarPagoInput) -> ActualizarPagoPayload:
         from app import db
         pago = Pago.query.get(id)
         if not pago:
             raise Exception(f"Pago no encontrado: {id}")
-        
         if input.monto is not None:
             pago.monto = input.monto
         if input.metodo is not None:
@@ -84,29 +125,29 @@ class ActualizarPago(graphene.Mutation):
             pago.estado = input.estado
         if input.referencia is not None:
             pago.referencia = input.referencia
-        
+        if input.ordenId is not None:
+            pago.orden_id = input.ordenId
         db.session.commit()
-        return ActualizarPago(pago=pago)
+        return ActualizarPagoPayload(pago=PagoType(
+            id=pago.id,
+            monto=pago.monto,
+            metodo=pago.metodo,
+            estado=pago.estado,
+            referencia=pago.referencia,
+            ordenId=pago.orden_id,
+            creadoEn=pago.creado_en.isoformat(),
+            actualizadoEn=pago.actualizado_en.isoformat(),
+        ))
 
-class EliminarPago(graphene.Mutation):
-    class Arguments:
-        id = graphene.ID(required=True)
-    
-    success = graphene.Boolean()
-    
-    def mutate(self, info, id):
-        from app.models import Pago
+    @strawberry.mutation
+    def eliminarPago(self, info: Info, id: str) -> EliminarPagoPayload:
         from app import db
         pago = Pago.query.get(id)
         if not pago:
-            return EliminarPago(success=False)
+            return EliminarPagoPayload(success=False)
         db.session.delete(pago)
         db.session.commit()
-        return EliminarPago(success=True)
+        return EliminarPagoPayload(success=True)
 
-class Mutation(graphene.ObjectType):
-    crear_pago = CrearPago.Field()
-    actualizar_pago = ActualizarPago.Field()
-    eliminar_pago = EliminarPago.Field()
 
-schema = graphene.Schema(query=Query, mutation=Mutation)
+schema = Schema(query=Query, mutation=Mutation)

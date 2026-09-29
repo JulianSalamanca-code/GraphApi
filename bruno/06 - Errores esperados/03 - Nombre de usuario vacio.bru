@@ -11,8 +11,8 @@ post {
 }
 
 body:graphql {
-  mutation CrearUsuario($input: CrearUsuarioInput!) {
-    crearUsuario(input: $input) {
+  mutation CrearUsuario($nombre: String!, $email: String!, $telefono: String) {
+    crearUsuario(nombre: $nombre, email: $email, telefono: $telefono) {
       id
     }
   }
@@ -20,10 +20,8 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "input": {
-      "nombre": "   ",
-      "email": "vacio@example.com"
-    }
+    "nombre": "   ",
+    "email": "vacio@example.com"
   }
 }
 

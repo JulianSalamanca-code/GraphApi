@@ -19,13 +19,14 @@ body:graphql {
   ) {
     actualizarUsuario(
       id: $usuarioId
-      input: { nombre: "María Actualizada", telefono: null }
+      nombre: "María Actualizada"
+      telefono: null
     ) {
       id
       nombre
       telefono
     }
-    actualizarOrden(id: $ordenId, input: { estado: PAGADA }) {
+    actualizarOrden(id: $ordenId, estado: PAGADA) {
       id
       estado
       total

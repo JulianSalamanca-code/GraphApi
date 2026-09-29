@@ -1,25 +1,28 @@
-import { ApolloGateway, IntrospectAndCompose } from '@apollo/gateway';
-import { ApolloServer } from '@apollo/server';
-import { expressMiddleware } from '@apollo/server/express4';
 import express from 'express';
+import { graphql, buildASTSchema, validateSchema, execute } from 'graphql';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+import { resolvers } from './resolvers';
+import gql from 'graphql-tag';
+
+const typeDefs = gql(readFileSync(join(__dirname, 'schema.graphql'), 'utf-8'));
+const schema = buildASTSchema(typeDefs);
 
 async function bootstrap() {
-  const gateway = new ApolloGateway({
-    supergraphSdl: new IntrospectAndCompose({
-      subgraphs: [
-        { name: 'usuarios', url: 'http://usuarios-service:3001/graphql' },
-        { name: 'ordenes', url: 'http://ordenes-service:3002/graphql' },
-        { name: 'pedidos', url: 'http://pedidos-service:3003/graphql' },
-        { name: 'pagos', url: 'http://pagos-service:3004/graphql' },
-      ],
-    }),
-  });
-
-  const server = new ApolloServer({ gateway });
-  await server.start();
-
   const app = express();
-  app.use('/graphql', expressMiddleware(server));
+  app.use(express.json());
+
+  app.use('/graphql', async (req, res) => {
+    const { query, variables, operationName } = req.body;
+    const result = await execute({
+      schema,
+      document: typeDefs.definitions.find((d: any) => d.kind === 'OperationDefinition') as any,
+      rootValue: resolvers.Query,
+      variableValues: variables,
+      operationName,
+    });
+    res.json(result);
+  });
 
   const port = process.env.PORT || 3000;
   app.listen(port, () => {

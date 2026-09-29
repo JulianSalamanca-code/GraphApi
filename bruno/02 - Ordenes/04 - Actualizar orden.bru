@@ -11,8 +11,8 @@ post {
 }
 
 body:graphql {
-  mutation ActualizarOrden($id: ID!, $input: ActualizarOrdenInput!) {
-    actualizarOrden(id: $id, input: $input) {
+  mutation ActualizarOrden($id: ID!, $estado: String) {
+    actualizarOrden(id: $id, estado: $estado) {
       id
       estado
       total
@@ -24,9 +24,7 @@ body:graphql {
 body:graphql:vars {
   {
     "id": "be1b933d-2684-4694-a13f-eb6b98c44cd2",
-    "input": {
-      "estado": "PAGADA"
-    }
+    "estado": "PAGADA"
   }
 }
 

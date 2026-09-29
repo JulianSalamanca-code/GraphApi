@@ -1,6 +1,6 @@
 # MrCatFood - GraphApi
 
-API Gateway GraphQL para el sistema de microservicios MrCatFood, construido con WunderGraph Cosmo Router.
+API Gateway GraphQL para el sistema de microservicios MrCatFood, construido con Apollo Server.
 
 ## Arquitectura
 
@@ -8,7 +8,7 @@ MrCatFood utiliza una arquitectura de microservicios con un API Gateway GraphQL 
 
 ```
                     ┌─────────────────┐
-                    │  Cosmo Router   │
+                    │  Apollo Gateway │
                     │   (GraphQL)     │
                     │   Puerto 3000   │
                     └────────┬────────┘
@@ -36,14 +36,14 @@ MrCatFood utiliza una arquitectura de microservicios con un API Gateway GraphQL 
 
 ## Servicios y Puertos
 
-| Servicio | Tecnología | Puerto | Descripción |
-|----------|-----------|--------|-------------|
-| cosmo-router | WunderGraph Cosmo | 3000 | API Gateway GraphQL |
-| usuarios-service | Java Spring Boot | 3001 | Gestión de usuarios |
-| ordenes-service | Java Spring Boot | 3002 | Gestión de órdenes |
-| pedidos-service | NestJS | 3003 | Gestión de pedidos |
-| pagos-service | Python Flask | 3004 | Procesamiento de pagos |
-| consul | HashiCorp Consul | 8500 | Service Discovery |
+| Servicio | Tecnología | Puerto | Base de datos | Descripción |
+|----------|-----------|--------|---------------|-------------|
+| apollo-gateway | Node.js + Apollo Server | 3000 | - | API Gateway GraphQL |
+| usuarios-service | Java Spring Boot | 3001 | SQLite | Gestión de usuarios |
+| ordenes-service | Java Spring Boot | 3002 | SQLite | Gestión de órdenes |
+| pedidos-service | NestJS | 3003 | SQLite | Gestión de pedidos |
+| pagos-service | Python Flask | 3004 | SQLite | Procesamiento de pagos |
+| consul | HashiCorp Consul | 8500 | - | Service Discovery |
 
 ## Requisitos
 
@@ -74,7 +74,7 @@ MrCatFood utiliza una arquitectura de microservicios con un API Gateway GraphQL 
    ```
 
 5. Accede a:
-   - **GraphQL Playground**: http://localhost:3000
+   - **GraphQL Playground**: http://localhost:3000/graphql
    - **Consul UI**: http://localhost:8500
 
 ## Comandos útiles
@@ -99,17 +99,11 @@ docker-compose build --no-cache
 ## Ejemplo de query GraphQL
 
 ```graphql
-query GetUsuarioConPedidos($id: ID!) {
+query GetUsuario($id: ID!) {
   usuario(id: $id) {
     id
     nombre
     email
-    pedidos {
-      id
-      estado
-      total
-      fechaCreacion
-    }
   }
 }
 ```
@@ -127,13 +121,22 @@ Variables:
 GraphApi/
 ├── consul/
 │   └── config.json          # Configuración de Consul
-├── cosmo/
-│   └── config.yaml          # Configuración del router
 ├── services/
-│   ├── usuarios/            # Spring Boot
-│   ├── ordenes/             # Spring Boot
-│   ├── pedidos/             # NestJS
-│   └── pagos/               # Flask
+│   ├── usuarios-service/    # Spring Boot + SQLite
+│   ├── ordenes-service/     # Spring Boot + SQLite
+│   ├── pedidos-service/     # NestJS + SQLite
+│   └── pagos-service/       # Flask + SQLite
+├── gateway/                 # Apollo Server + Apollo Gateway
+│   └── src/
+│       └── main.ts          # Gateway con orquestación
+├── bruno/                   # Colección de tests
+│   ├── 00 - Informacion/
+│   ├── 01 - Usuarios/
+│   ├── 02 - Ordenes/
+│   ├── 03 - Pedidos/
+│   ├── 04 - Pagos/
+│   ├── 05 - Flujo completo/
+│   └── 06 - Errores esperados/
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
@@ -146,4 +149,14 @@ Cada servicio tiene su propio directorio bajo `services/` con su Dockerfile y c�
 ```bash
 cd services/<servicio>
 # Sigue las instrucciones del README de cada servicio
+```
+
+## Tests
+
+La colección de Bruno en `bruno/` contiene pruebas para todos los servicios:
+
+```bash
+# Importar la colección en Bruno y ejecutar
+# o usar la CLI de Bruno
+bru run bruno/
 ```

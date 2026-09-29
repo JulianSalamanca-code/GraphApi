@@ -16,7 +16,7 @@ import { HealthController } from './health.controller';
     }),
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
-      database: process.env.DB_PATH || './pedidos.db',
+      database: `${process.env.DB_PATH || '.'}/pedidos.db`,
       entities: [Pedido],
       synchronize: true,
     }),

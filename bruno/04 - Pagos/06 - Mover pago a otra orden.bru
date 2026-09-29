@@ -15,10 +15,7 @@ body:graphql {
     actualizarPago(id: $id, input: { ordenId: $ordenId }) {
       id
       ordenId
-      orden {
-        id
-        total
-      }
+      estado
     }
   }
 }
@@ -26,10 +23,10 @@ body:graphql {
 body:graphql:vars {
   {
     "id": "00000000-0000-4000-8000-000000000005",
-    "ordenId": "00000000-0000-4000-8000-000000000004"
+    "ordenId": "00000000-0000-4000-8000-000000000006"
   }
 }
 
 docs {
-  El pago se mueve a otra orden existente. No modifica totales.
+  La nueva orden debe existir.
 }

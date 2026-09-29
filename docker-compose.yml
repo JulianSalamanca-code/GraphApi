@@ -3,7 +3,7 @@ services:
     image: hashicorp/consul:1.17
     container_name: mrcatfood-consul
     ports:
-      - "8500:8500"
+      - "127.0.0.1:8500:8500"
     volumes:
       - ./consul/config.json:/consul/config/config.json:ro
     command: "agent -server -ui -bootstrap-expect=1 -client=0.0.0.0 -config-file=/consul/config/config.json"
@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile
     container_name: mrcatfood-usuarios
     ports:
-      - "3001:3001"
+      - "127.0.0.1:3001:3001"
     environment:
       - CONSUL_HOST=consul
       - SERVICE_PORT=3001
@@ -45,7 +45,7 @@ services:
       dockerfile: Dockerfile
     container_name: mrcatfood-ordenes
     ports:
-      - "3002:3002"
+      - "127.0.0.1:3002:3002"
     environment:
       - CONSUL_HOST=consul
       - SERVICE_PORT=3002
@@ -69,10 +69,13 @@ services:
       dockerfile: Dockerfile
     container_name: mrcatfood-pedidos
     ports:
-      - "3003:3003"
+      - "127.0.0.1:3003:3003"
     environment:
       - CONSUL_HOST=consul
       - SERVICE_PORT=3003
+      - DB_PATH=/data
+    volumes:
+      - pedidos-data:/data
     networks:
       - mrcatfood-network
     depends_on:
@@ -90,7 +93,7 @@ services:
       dockerfile: Dockerfile
     container_name: mrcatfood-pagos
     ports:
-      - "3004:3004"
+      - "127.0.0.1:3004:3004"
     environment:
       - CONSUL_HOST=consul
       - SERVICE_PORT=3004
@@ -112,7 +115,7 @@ services:
     build: ./gateway
     container_name: mrcatfood-gateway
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     environment:
       - PORT=3000
     networks:
