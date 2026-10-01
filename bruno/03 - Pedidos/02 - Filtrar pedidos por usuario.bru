@@ -17,7 +17,11 @@ body:graphql {
       producto
       cantidad
       subtotal
-      ordenId
+      orden {
+        id
+        estado
+        total
+      }
     }
   }
 }

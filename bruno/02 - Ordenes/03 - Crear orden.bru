@@ -11,12 +11,17 @@ post {
 }
 
 body:graphql {
-  mutation CrearOrden($usuarioId: ID!) {
-    crearOrden(usuarioId: $usuarioId) {
+  mutation CrearOrden($input: CrearOrdenInput!) {
+    crearOrden(input: $input) {
       id
       estado
       usuarioId
       total
+      usuario {
+        id
+        nombre
+        email
+      }
       creadoEn
       actualizadoEn
     }
@@ -25,10 +30,14 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "usuarioId": "c4071df6-142d-49db-a188-fa8c2f52d55f"
+    "input": {
+      "usuarioId": "c4071df6-142d-49db-a188-fa8c2f52d55f",
+      "estado": "PENDIENTE"
+    }
   }
 }
 
 docs {
-  Se crea con estado PENDIENTE y total 0. El propietario queda fijado.
+  estado es opcional (PENDIENTE, PAGADA, COMPLETADA o CANCELADA).
+  Si se omite, se crea como PENDIENTE. El propietario queda fijado.
 }

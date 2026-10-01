@@ -11,8 +11,8 @@ post {
 }
 
 body:graphql {
-  mutation ActualizarUsuario($id: ID!, $nombre: String, $email: String, $telefono: String, $activo: Boolean) {
-    actualizarUsuario(id: $id, nombre: $nombre, email: $email, telefono: $telefono, activo: $activo) {
+  mutation ActualizarUsuario($id: ID!, $input: ActualizarUsuarioInput!) {
+    actualizarUsuario(id: $id, input: $input) {
       id
       nombre
       email
@@ -26,9 +26,11 @@ body:graphql {
 body:graphql:vars {
   {
     "id": "e50368dc-ea18-46d8-8a89-3a9e334dd533",
-    "nombre": "María Pérez Actualizada",
-    "telefono": "+34 611 111 111",
-    "activo": false
+    "input": {
+      "nombre": "María Pérez Actualizada",
+      "telefono": "+34 611 111 111",
+      "activo": false
+    }
   }
 }
 

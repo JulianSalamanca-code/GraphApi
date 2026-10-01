@@ -16,14 +16,32 @@ body:graphql {
       id
       estado
       total
-      usuarioId
-      creadoEn
-      actualizadoEn
+      usuario {
+        id
+        nombre
+        email
+      }
+      pedidos {
+        id
+        producto
+        cantidad
+        subtotal
+      }
+      pagos {
+        id
+        monto
+        metodo
+        estado
+      }
     }
     usuario(id: $usuarioId) {
       id
-      nombre
-      email
+      pedidos {
+        id
+      }
+      ordenes {
+        id
+      }
     }
     pedidos(usuarioId: $usuarioId, ordenId: $ordenId) {
       id

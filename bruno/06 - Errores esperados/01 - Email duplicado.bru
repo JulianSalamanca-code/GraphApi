@@ -11,8 +11,8 @@ post {
 }
 
 body:graphql {
-  mutation CrearUsuario($nombre: String!, $email: String!, $telefono: String) {
-    crearUsuario(nombre: $nombre, email: $email, telefono: $telefono) {
+  mutation CrearUsuario($input: CrearUsuarioInput!) {
+    crearUsuario(input: $input) {
       id
     }
   }
@@ -20,12 +20,14 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "nombre": "Usuario Repetido",
-    "email": "duplicado@example.com"
+    "input": {
+      "nombre": "Usuario Repetido",
+      "email": "duplicado@example.com"
+    }
   }
 }
 
 docs {
   Ejecútalo dos veces. La segunda debe responder con data: null y
-  errors[0].message: "El email ya está registrado: duplicado@example.com".
+  errors[0].message: "Ya existe un usuario con ese email.".
 }

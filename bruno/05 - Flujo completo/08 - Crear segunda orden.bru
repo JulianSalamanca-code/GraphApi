@@ -11,8 +11,8 @@ post {
 }
 
 body:graphql {
-  mutation CrearSegundaOrden($usuarioId: ID!) {
-    crearOrden(usuarioId: $usuarioId) {
+  mutation CrearSegundaOrden($input: CrearOrdenInput!) {
+    crearOrden(input: $input) {
       id
       estado
       total
@@ -22,13 +22,19 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "usuarioId": "{{flowUsuarioId}}"
+    "input": {
+      "usuarioId": "{{flowUsuarioId}}"
+    }
   }
 }
 
 script:post-response {
   const data = res.body.data;
-  if (data && data.crearOrden && data.crearOrden.id) {
-    bru.setVar("flowOrden2Id", data.crearOrden.id);
+  if (data && data.crearSegundaOrden && data.crearSegundaOrden.id) {
+    bru.setVar("flowOrden2Id", data.crearSegundaOrden.id);
   }
+}
+
+docs {
+  Sirve para probar el movimiento de un pedido a otra orden del mismo propietario.
 }
