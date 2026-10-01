@@ -11,19 +11,16 @@ post {
 }
 
 body:graphql {
-  query ListarUsuarios {
-    usuarios {
-      id
-      nombre
-      email
-      telefono
-      activo
-      creadoEn
-      actualizadoEn
-    }
+  query {
+    usuarios { id nombre email telefono activo creadoEn actualizadoEn }
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data.usuarios: isArray
+}
+
+docs {
+  Devuelve todos los usuarios.
 }

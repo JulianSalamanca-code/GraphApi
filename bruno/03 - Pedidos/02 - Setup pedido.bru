@@ -1,0 +1,42 @@
+meta {
+  name: 02 - Setup pedido
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupPedido($input: CrearPedidoInput!) {
+    crearPedido(input: $input) { id subtotal }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "producto": "Pedido Base",
+      "cantidad": 2,
+      "precioUnitario": 12.5,
+      "usuarioId": "{{pedUsuId}}",
+      "ordenId": "{{pedOrdId}}"
+    }
+  }
+}
+
+script:post-response {
+  bru.setVar("pedId", res.body.data.crearPedido.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.crearPedido.id: isDefined
+}
+
+docs {
+  Crea un pedido base en la primera orden.
+}

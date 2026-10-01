@@ -1,0 +1,40 @@
+meta {
+  name: 00 - Setup usuario
+  type: graphql
+  seq: 0
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupUsuario($input: CrearUsuarioInput!) {
+    crearUsuario(input: $input) { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": { "nombre": "Usuario Pagos", "email": "pagos_{{pagRun}}@example.com" }
+  }
+}
+
+script:pre-request {
+  bru.setVar("pagRun", String(Date.now()));
+}
+
+script:post-response {
+  bru.setVar("pagUsuId", res.body.data.crearUsuario.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.crearUsuario.id: isDefined
+}
+
+docs {
+  Crea el usuario propietario.
+}

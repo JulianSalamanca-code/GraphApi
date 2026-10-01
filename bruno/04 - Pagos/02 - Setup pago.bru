@@ -1,0 +1,42 @@
+meta {
+  name: 02 - Setup pago
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupPago($input: CrearPagoInput!) {
+    crearPago(input: $input) { id monto metodo estado ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "monto": 30,
+      "metodo": "TARJETA",
+      "estado": "APROBADO",
+      "referencia": "REF-SETUP",
+      "ordenId": "{{pagOrdId}}"
+    }
+  }
+}
+
+script:post-response {
+  bru.setVar("pagId", res.body.data.crearPago.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.crearPago.id: isDefined
+}
+
+docs {
+  Crea un pago base en la primera orden.
+}

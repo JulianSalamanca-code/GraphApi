@@ -1,0 +1,32 @@
+meta {
+  name: 12 - Obtener pago por id
+  type: graphql
+  seq: 12
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query ObtenerPago($id: ID!) {
+    pago(id: $id) { id monto metodo estado referencia ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{pagId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pago.id: isDefined
+}
+
+docs {
+  Obtiene el pago creado en el setup.
+}

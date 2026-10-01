@@ -1,0 +1,26 @@
+meta {
+  name: 10 - Listar todos los pagos
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query {
+    pagos { id monto metodo estado referencia ordenId }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pagos: isArray
+}
+
+docs {
+  Devuelve todos los pagos.
+}

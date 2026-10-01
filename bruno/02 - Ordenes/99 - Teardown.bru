@@ -1,0 +1,26 @@
+meta {
+  name: 99 - Teardown
+  type: graphql
+  seq: 99
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation Teardown {
+    eliminarOrden(id: "{{ordId}}")
+    eliminarUsuario(id: "{{ordUsuId}}")
+  }
+}
+
+assert {
+  res.status: eq 200
+}
+
+docs {
+  Limpia la orden base y su usuario.
+}

@@ -1,0 +1,26 @@
+meta {
+  name: 10 - Listar todos los pedidos
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query {
+    pedidos { id producto cantidad subtotal usuarioId ordenId }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pedidos: isArray
+}
+
+docs {
+  Devuelve todos los pedidos.
+}

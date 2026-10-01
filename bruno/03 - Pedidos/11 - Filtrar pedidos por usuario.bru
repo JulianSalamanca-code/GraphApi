@@ -1,0 +1,32 @@
+meta {
+  name: 11 - Filtrar pedidos por usuario
+  type: graphql
+  seq: 11
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query FiltrarPorUsuario($usuarioId: ID) {
+    pedidos(usuarioId: $usuarioId) { id producto subtotal }
+  }
+}
+
+body:graphql:vars {
+  {
+    "usuarioId": "{{pedUsuId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pedidos: isArray
+}
+
+docs {
+  Filtra los pedidos por usuario.
+}

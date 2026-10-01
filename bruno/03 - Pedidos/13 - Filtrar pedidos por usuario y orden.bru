@@ -1,0 +1,33 @@
+meta {
+  name: 13 - Filtrar pedidos por usuario y orden
+  type: graphql
+  seq: 13
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query FiltrarPorAmbos($usuarioId: ID, $ordenId: ID) {
+    pedidos(usuarioId: $usuarioId, ordenId: $ordenId) { id producto subtotal }
+  }
+}
+
+body:graphql:vars {
+  {
+    "usuarioId": "{{pedUsuId}}",
+    "ordenId": "{{pedOrdId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pedidos: isArray
+}
+
+docs {
+  Filtra por usuario y orden a la vez.
+}

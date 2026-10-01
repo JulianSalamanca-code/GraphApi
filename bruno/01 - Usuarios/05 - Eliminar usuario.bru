@@ -18,15 +18,15 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "e50368dc-ea18-46d8-8a89-3a9e334dd533"
+    "id": "{{usuNuevoId}}"
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data.eliminarUsuario: eq true
 }
 
 docs {
-  Devuelve true si el usuario no tiene pedidos ni órdenes.
-  Si tiene dependencias, responde con un error de conflicto.
+  Elimina el segundo usuario (ya sin dependencias).
 }

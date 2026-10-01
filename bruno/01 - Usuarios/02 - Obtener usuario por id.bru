@@ -12,37 +12,21 @@ post {
 
 body:graphql {
   query ObtenerUsuario($id: ID!) {
-    usuario(id: $id) {
-      id
-      nombre
-      email
-      telefono
-      activo
-      ordenes {
-        id
-        estado
-        total
-      }
-      pedidos {
-        id
-        producto
-      }
-      creadoEn
-      actualizadoEn
-    }
+    usuario(id: $id) { id nombre email telefono activo creadoEn actualizadoEn }
   }
 }
 
 body:graphql:vars {
   {
-    "id": "e50368dc-ea18-46d8-8a89-3a9e334dd533"
+    "id": "{{usuId}}"
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data.usuario.id: isDefined
 }
 
 docs {
-  Sustituye el id por el UUID de un usuario existente.
+  Obtiene el usuario creado en el setup.
 }

@@ -13,32 +13,23 @@ post {
 body:graphql {
   mutation ActualizarUsuario($id: ID!, $input: ActualizarUsuarioInput!) {
     actualizarUsuario(id: $id, input: $input) {
-      id
-      nombre
-      email
-      telefono
-      activo
-      actualizadoEn
+      id nombre email telefono activo actualizadoEn
     }
   }
 }
 
 body:graphql:vars {
   {
-    "id": "e50368dc-ea18-46d8-8a89-3a9e334dd533",
-    "input": {
-      "nombre": "María Pérez Actualizada",
-      "telefono": "+34 611 111 111",
-      "activo": false
-    }
+    "id": "{{usuNuevoId}}",
+    "input": { "nombre": "Usuario Actualizado", "telefono": null, "activo": false }
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data.actualizarUsuario.activo: eq false
 }
 
 docs {
-  Solo modifica los campos enviados. telefono: null elimina el teléfono.
-  nombre, email y activo no pueden ser null.
+  Actualiza el segundo usuario. telefono null lo elimina.
 }

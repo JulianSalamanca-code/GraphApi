@@ -26,7 +26,7 @@ body:graphql:vars {
   {
     "input": {
       "nombre": "María Pérez",
-      "email": "maria@example.com",
+      "email": "flujo_{{flowRun}}@example.com",
       "telefono": "+34 600 000 000"
     }
   }
@@ -37,6 +37,10 @@ script:post-response {
   if (data && data.crearUsuario && data.crearUsuario.id) {
     bru.setVar("flowUsuarioId", data.crearUsuario.id);
   }
+}
+
+script:pre-request {
+  bru.setVar("flowRun", String(Date.now()));
 }
 
 assert {

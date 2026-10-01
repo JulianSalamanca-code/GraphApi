@@ -1,0 +1,40 @@
+meta {
+  name: 01 - Setup ordenes
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupOrdenes($a: CrearOrdenInput!, $b: CrearOrdenInput!) {
+    ordenA: crearOrden(input: $a) { id }
+    ordenB: crearOrden(input: $b) { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "a": { "usuarioId": "{{pagUsuId}}" },
+    "b": { "usuarioId": "{{pagUsuId}}" }
+  }
+}
+
+script:post-response {
+  bru.setVar("pagOrdId", res.body.data.ordenA.id);
+  bru.setVar("pagOrd2Id", res.body.data.ordenB.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.ordenA.id: isDefined
+  res.body.data.ordenB.id: isDefined
+}
+
+docs {
+  Crea dos ordenes del mismo propietario.
+}

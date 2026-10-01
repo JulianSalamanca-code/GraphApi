@@ -1,0 +1,33 @@
+meta {
+  name: 16 - Actualizar pedido
+  type: graphql
+  seq: 16
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation ActualizarPedido($id: ID!, $input: ActualizarPedidoInput!) {
+    actualizarPedido(id: $id, input: $input) { id cantidad subtotal ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{ped2Id}}",
+    "input": { "cantidad": 4 }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.actualizarPedido.cantidad: eq 4
+}
+
+docs {
+  Cambia la cantidad; el subtotal se recalcula.
+}

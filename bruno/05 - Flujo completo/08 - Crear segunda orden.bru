@@ -30,8 +30,8 @@ body:graphql:vars {
 
 script:post-response {
   const data = res.body.data;
-  if (data && data.crearSegundaOrden && data.crearSegundaOrden.id) {
-    bru.setVar("flowOrden2Id", data.crearSegundaOrden.id);
+  if (data && data.crearOrden && data.crearOrden.id) {
+    bru.setVar("flowOrden2Id", data.crearOrden.id);
   }
 }
 

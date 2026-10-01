@@ -1,0 +1,42 @@
+meta {
+  name: 13 - Crear pago
+  type: graphql
+  seq: 13
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation CrearPago($input: CrearPagoInput!) {
+    crearPago(input: $input) { id monto metodo estado referencia ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": {
+      "monto": 20,
+      "metodo": "EFECTIVO",
+      "estado": "APROBADO",
+      "referencia": "REF-002",
+      "ordenId": "{{pagOrdId}}"
+    }
+  }
+}
+
+script:post-response {
+  bru.setVar("pag2Id", res.body.data.crearPago.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.crearPago.id: isDefined
+}
+
+docs {
+  Crea un segundo pago.
+}

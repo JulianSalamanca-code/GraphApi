@@ -1,0 +1,26 @@
+meta {
+  name: 10 - Listar todas las ordenes
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query {
+    ordenes { id estado usuarioId total creadoEn actualizadoEn }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.ordenes: isArray
+}
+
+docs {
+  Devuelve todas las ordenes.
+}

@@ -1,0 +1,36 @@
+meta {
+  name: 12 - Crear orden
+  type: graphql
+  seq: 12
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation CrearOrden($input: CrearOrdenInput!) {
+    crearOrden(input: $input) { id estado usuarioId total creadoEn actualizadoEn }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": { "usuarioId": "{{ordUsuId}}", "estado": "PAGADA" }
+  }
+}
+
+script:post-response {
+  bru.setVar("ordNuevaId", res.body.data.crearOrden.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.crearOrden.id: isDefined
+}
+
+docs {
+  Crea una segunda orden con estado explicito.
+}

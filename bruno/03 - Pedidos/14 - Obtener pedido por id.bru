@@ -1,0 +1,32 @@
+meta {
+  name: 14 - Obtener pedido por id
+  type: graphql
+  seq: 14
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query ObtenerPedido($id: ID!) {
+    pedido(id: $id) { id producto cantidad subtotal usuarioId ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{pedId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pedido.id: isDefined
+}
+
+docs {
+  Obtiene el pedido creado en el setup.
+}

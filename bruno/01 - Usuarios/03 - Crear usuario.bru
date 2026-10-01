@@ -12,33 +12,29 @@ post {
 
 body:graphql {
   mutation CrearUsuario($input: CrearUsuarioInput!) {
-    crearUsuario(input: $input) {
-      id
-      nombre
-      email
-      telefono
-      activo
-      creadoEn
-      actualizadoEn
-    }
+    crearUsuario(input: $input) { id nombre email telefono activo creadoEn actualizadoEn }
   }
 }
 
 body:graphql:vars {
   {
     "input": {
-      "nombre": "María Pérez",
-      "email": "maria@example.com",
+      "nombre": "Usuario Nuevo",
+      "email": "usuarios_nuevo_{{usuRun}}@example.com",
       "telefono": "+34 600 000 000"
     }
   }
 }
 
+script:post-response {
+  bru.setVar("usuNuevoId", res.body.data.crearUsuario.id);
+}
+
 assert {
   res.status: eq 200
+  res.body.data.crearUsuario.id: isDefined
 }
 
 docs {
-  El email se almacena en minúsculas y debe ser único.
-  telefono es opcional. Guarda el id devuelto para las siguientes operaciones.
+  Crea un segundo usuario. Guarda su id para actualizar/eliminar.
 }

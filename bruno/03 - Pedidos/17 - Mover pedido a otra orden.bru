@@ -1,0 +1,33 @@
+meta {
+  name: 17 - Mover pedido a otra orden
+  type: graphql
+  seq: 17
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation MoverPedido($id: ID!, $input: ActualizarPedidoInput!) {
+    actualizarPedido(id: $id, input: $input) { id ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{ped2Id}}",
+    "input": { "ordenId": "{{pedOrd2Id}}" }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.actualizarPedido.ordenId: isDefined
+}
+
+docs {
+  Mueve el pedido a la segunda orden del mismo propietario.
+}

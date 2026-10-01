@@ -1,0 +1,32 @@
+meta {
+  name: 11 - Obtener orden por id
+  type: graphql
+  seq: 11
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query ObtenerOrden($id: ID!) {
+    orden(id: $id) { id estado usuarioId total usuario { id email } creadoEn actualizadoEn }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{ordId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.orden.id: isDefined
+}
+
+docs {
+  Obtiene la orden creada en el setup.
+}

@@ -1,0 +1,33 @@
+meta {
+  name: 15 - Mover pago a otra orden
+  type: graphql
+  seq: 15
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation MoverPago($id: ID!, $input: ActualizarPagoInput!) {
+    actualizarPago(id: $id, input: $input) { id ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{pag2Id}}",
+    "input": { "ordenId": "{{pagOrd2Id}}" }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.actualizarPago.ordenId: isDefined
+}
+
+docs {
+  Mueve el pago a la segunda orden.
+}

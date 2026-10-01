@@ -1,7 +1,7 @@
 meta {
-  name: 07 - Eliminar pago
+  name: 16 - Eliminar pago
   type: graphql
-  seq: 7
+  seq: 16
 }
 
 post {
@@ -18,14 +18,15 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "00000000-0000-4000-8000-000000000005"
+    "id": "{{pag2Id}}"
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data.eliminarPago: eq true
 }
 
 docs {
-  Devuelve true. No modifica el total de la orden.
+  Elimina el segundo pago.
 }

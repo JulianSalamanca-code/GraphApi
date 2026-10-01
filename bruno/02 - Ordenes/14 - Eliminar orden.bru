@@ -1,7 +1,7 @@
 meta {
-  name: 05 - Eliminar orden
+  name: 14 - Eliminar orden
   type: graphql
-  seq: 5
+  seq: 14
 }
 
 post {
@@ -18,15 +18,15 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "be1b933d-2684-4694-a13f-eb6b98c44cd2"
+    "id": "{{ordNuevaId}}"
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data.eliminarOrden: eq true
 }
 
 docs {
-  Devuelve true si la orden no tiene pedidos ni pagos.
-  Si tiene dependencias, responde con un error de conflicto.
+  Elimina la segunda orden (sin pedidos ni pagos).
 }

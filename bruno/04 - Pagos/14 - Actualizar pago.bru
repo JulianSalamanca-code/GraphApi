@@ -1,0 +1,33 @@
+meta {
+  name: 14 - Actualizar pago
+  type: graphql
+  seq: 14
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation ActualizarPago($id: ID!, $input: ActualizarPagoInput!) {
+    actualizarPago(id: $id, input: $input) { id monto estado }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{pag2Id}}",
+    "input": { "monto": 55, "estado": "REEMBOLSADO" }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.actualizarPago.monto: eq 55
+}
+
+docs {
+  Actualiza monto y estado del segundo pago.
+}

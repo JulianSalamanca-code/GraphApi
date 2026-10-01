@@ -1,0 +1,32 @@
+meta {
+  name: 12 - Filtrar pedidos por orden
+  type: graphql
+  seq: 12
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query FiltrarPorOrden($ordenId: ID) {
+    pedidos(ordenId: $ordenId) { id producto subtotal }
+  }
+}
+
+body:graphql:vars {
+  {
+    "ordenId": "{{pedOrdId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pedidos: isArray
+}
+
+docs {
+  Filtra los pedidos por orden.
+}

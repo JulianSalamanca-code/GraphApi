@@ -1,0 +1,33 @@
+meta {
+  name: 13 - Actualizar orden
+  type: graphql
+  seq: 13
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation ActualizarOrden($id: ID!, $input: ActualizarOrdenInput!) {
+    actualizarOrden(id: $id, input: $input) { id estado actualizadoEn }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{ordNuevaId}}",
+    "input": { "estado": "COMPLETADA" }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.actualizarOrden.estado: eq COMPLETADA
+}
+
+docs {
+  Actualiza el estado de la segunda orden.
+}

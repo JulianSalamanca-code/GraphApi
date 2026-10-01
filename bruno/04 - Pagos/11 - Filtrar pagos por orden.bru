@@ -1,0 +1,32 @@
+meta {
+  name: 11 - Filtrar pagos por orden
+  type: graphql
+  seq: 11
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query FiltrarPagos($ordenId: ID) {
+    pagos(ordenId: $ordenId) { id monto estado }
+  }
+}
+
+body:graphql:vars {
+  {
+    "ordenId": "{{pagOrdId}}"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pagos: isArray
+}
+
+docs {
+  Filtra los pagos por orden.
+}
