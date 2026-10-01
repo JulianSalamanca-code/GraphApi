@@ -23,11 +23,12 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "{{flowPedido2Id}}",
+    "id": "{{flowPedidoId}}",
     "ordenId": "{{flowOrden2Id}}"
   }
 }
 
 docs {
-  El pedido se mueve de la primera a la segunda orden; se recalculan los totales.
+  La nueva orden debe pertenecer al mismo usuario. Se recalculan los
+  totales de ambas órdenes.
 }

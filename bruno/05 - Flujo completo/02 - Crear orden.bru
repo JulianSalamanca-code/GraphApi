@@ -11,8 +11,8 @@ post {
 }
 
 body:graphql {
-  mutation CrearOrden($input: CrearOrdenInput!) {
-    crearOrden(input: $input) {
+  mutation CrearOrden($usuarioId: ID!) {
+    crearOrden(usuarioId: $usuarioId) {
       id
       estado
       usuarioId
@@ -23,9 +23,7 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "input": {
-      "usuarioId": "{{flowUsuarioId}}"
-    }
+    "usuarioId": "{{flowUsuarioId}}"
   }
 }
 
