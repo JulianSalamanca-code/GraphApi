@@ -1,0 +1,33 @@
+meta {
+  name: 12 - Nombre de usuario vacio
+  type: graphql
+  seq: 12
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation CrearUsuario($input: CrearUsuarioInput!) {
+    crearUsuario(input: $input) { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": { "nombre": "   ", "email": "vacio_{{errRun}}@example.com" }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains Bad Request
+}
+
+docs {
+  El nombre obligatorio no puede quedar vacio. Esperado: "Bad Request".
+}

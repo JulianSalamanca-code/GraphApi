@@ -1,7 +1,7 @@
 meta {
-  name: 04 - Producto de pedido vacio
+  name: 13 - Producto de pedido vacio
   type: graphql
-  seq: 4
+  seq: 13
 }
 
 post {
@@ -12,9 +12,7 @@ post {
 
 body:graphql {
   mutation CrearPedido($input: CrearPedidoInput!) {
-    crearPedido(input: $input) {
-      id
-    }
+    crearPedido(input: $input) { id }
   }
 }
 
@@ -24,17 +22,18 @@ body:graphql:vars {
       "producto": "   ",
       "cantidad": 1,
       "precioUnitario": 10,
-      "usuarioId": "00000000-0000-4000-8000-000000000001",
-      "ordenId": "00000000-0000-4000-8000-000000000002"
+      "usuarioId": "{{errUsuarioAId}}",
+      "ordenId": "{{errOrdenAId}}"
     }
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains Bad Request
 }
 
 docs {
-  Esperado: data: null y errors con "Bad Request".
-  Sustituye los ids por entidades reales.
+  Producto vacio con usuario y orden validos. Esperado: "Bad Request".
 }

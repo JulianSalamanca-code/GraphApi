@@ -1,0 +1,33 @@
+meta {
+  name: 10 - Email duplicado
+  type: graphql
+  seq: 10
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation CrearUsuario($input: CrearUsuarioInput!) {
+    crearUsuario(input: $input) { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": { "nombre": "Usuario Repetido", "email": "{{errUsuarioAEmail}}" }
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains Ya existe un usuario con ese email
+}
+
+docs {
+  El email del owner ya existe. Esperado: data null y error de conflicto.
+}

@@ -1,0 +1,38 @@
+meta {
+  name: 16 - Consultar entidad inexistente
+  type: graphql
+  seq: 16
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  query EntidadInexistente($id: ID!) {
+    usuario(id: $id) { id }
+    orden(id: $id) { id }
+    pedido(id: $id) { id }
+    pago(id: $id) { id }
+    usuarios { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "99999999-9999-4999-8999-999999999999"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.errors: isArray
+  res.body.data.usuarios: isArray
+}
+
+docs {
+  Cada campo inexistente da error pero la consulta sigue viva:
+  "usuarios" responde igualmente.
+}

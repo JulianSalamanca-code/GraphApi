@@ -1,0 +1,46 @@
+meta {
+  name: 00 - Setup usuarios
+  type: graphql
+  seq: 0
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupUsuarios($a: CrearUsuarioInput!, $b: CrearUsuarioInput!) {
+    userA: crearUsuario(input: $a) { id email }
+    userB: crearUsuario(input: $b) { id email }
+  }
+}
+
+body:graphql:vars {
+  {
+    "a": { "nombre": "Error Owner", "email": "errores_a_{{errRun}}@example.com" },
+    "b": { "nombre": "Error Otro", "email": "errores_b_{{errRun}}@example.com" }
+  }
+}
+
+script:pre-request {
+  bru.setVar("errRun", String(Date.now()));
+}
+
+script:post-response {
+  bru.setVar("errUsuarioAId", res.body.data.userA.id);
+  bru.setVar("errUsuarioAEmail", res.body.data.userA.email);
+  bru.setVar("errUsuarioBId", res.body.data.userB.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.userA.id: isDefined
+  res.body.data.userB.id: isDefined
+}
+
+docs {
+  Crea los dos usuarios base para los casos de error (owner y ajeno).
+  Guarda sus ids y el email del owner en variables de ejecucion.
+}

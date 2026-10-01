@@ -1,0 +1,36 @@
+meta {
+  name: 01 - Setup orden
+  type: graphql
+  seq: 1
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupOrden($input: CrearOrdenInput!) {
+    crearOrden(input: $input) { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "input": { "usuarioId": "{{errUsuarioAId}}" }
+  }
+}
+
+script:post-response {
+  bru.setVar("errOrdenAId", res.body.data.crearOrden.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.crearOrden.id: isDefined
+}
+
+docs {
+  Crea una orden propiedad del usuario owner.
+}

@@ -1,7 +1,7 @@
 meta {
-  name: 08 - Eliminar orden con dependencias
+  name: 17 - Eliminar orden con dependencias
   type: graphql
-  seq: 8
+  seq: 17
 }
 
 post {
@@ -18,15 +18,16 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "00000000-0000-4000-8000-000000000002"
+    "id": "{{errOrdenAId}}"
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains pedidos asociados
 }
 
 docs {
-  Usa una orden que tenga pedidos o pagos.
-  Esperado: errors con "pedidos asociados" o "pagos asociados" y data: null.
+  La orden owner tiene pedidos y pagos. Esperado: no se elimina.
 }

@@ -1,0 +1,34 @@
+meta {
+  name: 19 - Actualizacion con orden inexistente
+  type: graphql
+  seq: 19
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation ActualizarConOrdenInexistente($id: ID!, $ordenId: ID!) {
+    actualizarPedido(id: $id, input: { ordenId: $ordenId }) { id ordenId }
+  }
+}
+
+body:graphql:vars {
+  {
+    "id": "{{errPedidoAId}}",
+    "ordenId": "99999999-9999-4999-8999-999999999999"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains Orden con id
+}
+
+docs {
+  Mover el pedido a una orden inexistente. Esperado: error y sin cambios.
+}

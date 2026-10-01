@@ -1,7 +1,7 @@
 meta {
-  name: 05 - Pedido con propietario incorrecto
+  name: 14 - Pedido con propietario incorrecto
   type: graphql
-  seq: 5
+  seq: 14
 }
 
 post {
@@ -12,9 +12,7 @@ post {
 
 body:graphql {
   mutation CrearPedidoInvalido($input: CrearPedidoInput!) {
-    crearPedido(input: $input) {
-      id
-    }
+    crearPedido(input: $input) { id }
   }
 }
 
@@ -24,17 +22,18 @@ body:graphql:vars {
       "producto": "Producto con propietario ajeno",
       "cantidad": 1,
       "precioUnitario": 10,
-      "usuarioId": "00000000-0000-4000-8000-000000000009",
-      "ordenId": "00000000-0000-4000-8000-000000000002"
+      "usuarioId": "{{errUsuarioBId}}",
+      "ordenId": "{{errOrdenAId}}"
     }
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains propietario
 }
 
 docs {
-  usuarioId debe coincidir con el propietario de la orden.
-  Esperado: creación rechazada y el pedido no se crea.
+  usuarioId debe ser el propietario de la orden. Esperado: rechazo.
 }

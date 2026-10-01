@@ -1,0 +1,46 @@
+meta {
+  name: 02 - Setup pedido y pago
+  type: graphql
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/graphql
+  body: graphql
+  auth: none
+}
+
+body:graphql {
+  mutation SetupPedidoPago($p: CrearPedidoInput!, $pa: CrearPagoInput!) {
+    pedidoA: crearPedido(input: $p) { id }
+    pagoA: crearPago(input: $pa) { id }
+  }
+}
+
+body:graphql:vars {
+  {
+    "p": {
+      "producto": "Setup",
+      "cantidad": 1,
+      "precioUnitario": 10,
+      "usuarioId": "{{errUsuarioAId}}",
+      "ordenId": "{{errOrdenAId}}"
+    },
+    "pa": { "monto": 10, "metodo": "TARJETA", "ordenId": "{{errOrdenAId}}" }
+  }
+}
+
+script:post-response {
+  bru.setVar("errPedidoAId", res.body.data.pedidoA.id);
+  bru.setVar("errPagoAId", res.body.data.pagoA.id);
+}
+
+assert {
+  res.status: eq 200
+  res.body.data.pedidoA.id: isDefined
+  res.body.data.pagoA.id: isDefined
+}
+
+docs {
+  Crea un pedido y un pago en la orden owner.
+}

@@ -1,7 +1,7 @@
 meta {
-  name: 09 - Eliminar usuario con dependencias
+  name: 18 - Eliminar usuario con dependencias
   type: graphql
-  seq: 9
+  seq: 18
 }
 
 post {
@@ -18,15 +18,16 @@ body:graphql {
 
 body:graphql:vars {
   {
-    "id": "00000000-0000-4000-8000-000000000001"
+    "id": "{{errUsuarioAId}}"
   }
 }
 
 assert {
   res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains eliminar un usuario
 }
 
 docs {
-  Usa un usuario que tenga órdenes o pedidos.
-  Esperado: errors de conflicto y data: null.
+  El usuario owner tiene ordenes y pedidos. Esperado: no se elimina.
 }

@@ -1,7 +1,7 @@
 meta {
-  name: 06 - Orden inexistente en pedido
+  name: 15 - Orden inexistente en pedido
   type: graphql
-  seq: 6
+  seq: 15
 }
 
 post {
@@ -12,9 +12,7 @@ post {
 
 body:graphql {
   mutation CrearPedidoInvalido($input: CrearPedidoInput!) {
-    crearPedido(input: $input) {
-      id
-    }
+    crearPedido(input: $input) { id }
   }
 }
 
@@ -24,7 +22,7 @@ body:graphql:vars {
       "producto": "Producto huerfano",
       "cantidad": 1,
       "precioUnitario": 10,
-      "usuarioId": "00000000-0000-4000-8000-000000000001",
+      "usuarioId": "{{errUsuarioAId}}",
       "ordenId": "99999999-9999-4999-8999-999999999999"
     }
   }
@@ -32,8 +30,10 @@ body:graphql:vars {
 
 assert {
   res.status: eq 200
+  res.body.data: isNull
+  res.body.errors[0].message: contains Orden con id
 }
 
 docs {
-  Esperado: error mencionando la orden inexistente, con mensaje que contiene "Orden con id".
+  Orden inexistente. Esperado: error que menciona "Orden con id".
 }
