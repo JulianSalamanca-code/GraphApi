@@ -72,7 +72,9 @@ El gateway actual:
    protección de borrados, existencia de órdenes) que antes no podía validar
    ningún servicio de forma aislada.
 
-Los archivos `cosmo/` quedaron obsoletos y se conservan solo como referencia.
+La carpeta `cosmo/` (propuesta inicial basada en WunderGraph Cosmo) se eliminó
+por quedar obsoleta; el gateway actual es la implementación Apollo descrita
+arriba.
 
 ### Correcciones de conexión a base de datos
 

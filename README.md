@@ -1,48 +1,38 @@
 # MrCatFood - GraphApi
 
-API Gateway GraphQL para el sistema de microservicios MrCatFood, construido con WunderGraph Cosmo Router.
+API Gateway GraphQL para el sistema de microservicios MrCatFood. El gateway
+expone un **contrato unificado** y orquesta cuatro microservicios políglotas con
+persistencia en SQLite.
 
 ## Arquitectura
 
-MrCatFood utiliza una arquitectura de microservicios con un API Gateway GraphQL centralizado:
-
-```
-                    ┌─────────────────┐
-                    │  Cosmo Router   │
-                    │   (GraphQL)     │
-                    │   Puerto 3000   │
-                    └────────┬────────┘
-                             │
-              ┌──────────────┼──────────────┐
-              │              │              │
-    ┌─────────▼──────┐ ┌────▼─────┐ ┌──────▼───────┐
-    │ usuarios-svc   │ │ordenes-svc│ │ pedidos-svc  │
-    │ (Spring Boot)  │ │(Spring)   │ │  (NestJS)    │
-    │ Puerto 3001    │ │Puerto 3002│ │ Puerto 3003  │
-    └────────────────┘ └───────────┘ └──────────────┘
-                             │
-                    ┌────────▼────────┐
-                    │  pagos-service  │
-                    │    (Flask)      │
-                    │  Puerto 3004    │
-                    └─────────────────┘
-                             │
-                    ┌────────▼────────┐
-                    │     Consul      │
-                    │ Service Discovery│
-                    │  Puerto 8500    │
-                    └─────────────────┘
+```text
+                     ┌──────────────────────────┐
+                     │  Gateway GraphQL (:3000) │
+                     │  contrato unificado      │
+                     └───────────┬──────────────┘
+                                 │ HTTP (GraphQL)
+        ┌───────────────┬────────┴────────┬────────────────┐
+        │               │                 │                │
+┌───────▼──────┐ ┌──────▼───────┐ ┌───────▼────────┐ ┌─────▼────────┐
+│ Usuarios     │ │ Órdenes      │ │ Pedidos        │ │ Pagos        │
+│ Java/Spring  │ │ Java/Spring  │ │ NestJS/TypeORM │ │ Flask/Graphene│
+│ :3001        │ │ :3002        │ │ :3003          │ │ :3004        │
+└──────────────┘ └──────────────┘ └────────────────┘ └──────────────┘
+        │               │                 │                │
+        └───────────────┴── Consul (:8500) ┴────────────────┘
+                        service discovery
 ```
 
-## Servicios y Puertos
+## Servicios y puertos
 
 | Servicio | Tecnología | Puerto | Descripción |
-|----------|-----------|--------|-------------|
-| cosmo-router | WunderGraph Cosmo | 3000 | API Gateway GraphQL |
+| -------- | ---------- | ------ | ----------- |
+| gateway | Node.js + Apollo Server | 3000 | API Gateway GraphQL |
 | usuarios-service | Java Spring Boot | 3001 | Gestión de usuarios |
 | ordenes-service | Java Spring Boot | 3002 | Gestión de órdenes |
-| pedidos-service | NestJS | 3003 | Gestión de pedidos |
-| pagos-service | Python Flask | 3004 | Procesamiento de pagos |
+| pedidos-service | NestJS + TypeORM | 3003 | Gestión de pedidos |
+| pagos-service | Python Flask + Graphene | 3004 | Procesamiento de pagos |
 | consul | HashiCorp Consul | 8500 | Service Discovery |
 
 ## Requisitos
@@ -52,112 +42,84 @@ MrCatFood utiliza una arquitectura de microservicios con un API Gateway GraphQL 
 
 ## Inicio rápido
 
-1. Clona el repositorio:
-   ```bash
-   git clone <repo-url>
-   cd GraphApi
-   ```
+```bash
+docker compose up -d --build      # o: pnpm stack:up
+node scripts/wait-for-stack.mjs   # o: pnpm stack:wait
+```
 
-2. Crea el archivo de variables de entorno:
-   ```bash
-   cp .env.example .env
-   ```
+Accede a:
 
-3. Levanta todos los servicios:
-   ```bash
-   docker-compose up -d
-   ```
-
-4. Verifica que los servicios estén corriendo:
-   ```bash
-   docker-compose ps
-   ```
-
-5. Accede a:
-   - **GraphQL Playground**: http://localhost:3000
-   - **Consul UI**: http://localhost:8500
+- **GraphiQL** (interfaz visual): <http://localhost:3000/graphql>
+- **Consul UI**: <http://localhost:8500>
 
 ## Comandos útiles
 
 ```bash
-# Ver logs de todos los servicios
-docker-compose logs -f
-
-# Ver logs de un servicio específico
-docker-compose logs -f usuarios-service
-
-# Detener todos los servicios
-docker-compose down
-
-# Detener y eliminar volúmenes (borra datos)
-docker-compose down -v
-
-# Reconstruir imágenes
-docker-compose build --no-cache
+docker compose ps                 # estado de los contenedores
+docker compose logs -f            # logs en vivo
+docker compose down               # detener
+docker compose down -v            # detener y borrar datos
+docker compose build --no-cache   # reconstruir imágenes
 ```
 
 ## Ejemplo de query GraphQL
 
 ```graphql
-query GetUsuarioConPedidos($id: ID!) {
-  usuario(id: $id) {
+query OrdenCompleta($id: ID!) {
+  orden(id: $id) {
     id
-    nombre
-    email
-    pedidos {
-      id
-      estado
-      total
-      fechaCreacion
-    }
+    estado
+    total
+    usuario { id nombre email }
+    pedidos { id producto cantidad subtotal }
+    pagos { id monto estado }
   }
-}
-```
-
-Variables:
-```json
-{
-  "id": "usr_001"
 }
 ```
 
 ## Estructura del proyecto
 
-```
+```text
 GraphApi/
-├── consul/
-│   └── config.json          # Configuración de Consul
-├── cosmo/
-│   └── config.yaml          # Configuración del router
+├── gateway/               # API Gateway (Apollo Server)
 ├── services/
-│   ├── usuarios/            # Spring Boot
-│   ├── ordenes/             # Spring Boot
-│   ├── pedidos/             # NestJS
-│   └── pagos/               # Flask
+│   ├── usuarios-service/  # Spring Boot
+│   ├── ordenes-service/   # Spring Boot
+│   ├── pedidos-service/   # NestJS
+│   └── pagos-service/     # Flask + Graphene
+├── consul/                # Configuración de Consul
+├── shared/graphql/        # Contrato GraphQL de referencia
+├── bruno/                 # Colección de pruebas (49 peticiones)
+├── e2e/                   # Pruebas E2E de microservicios
+├── docs/                  # Documentación
 ├── docker-compose.yml
 ├── .env.example
 └── README.md
 ```
 
-## Desarrollo
-
-Cada servicio tiene su propio directorio bajo `services/` con su Dockerfile y código fuente correspondiente. Para desarrollar un servicio individual:
+## Pruebas
 
 ```bash
-cd services/<servicio>
-# Sigue las instrucciones del README de cada servicio
+# Colección Bruno (49 peticiones con aserciones)
+cd bruno && bru run
+
+# E2E de microservicios (requiere el stack arriba)
+pnpm test:e2e:micro
 ```
 
-## Certificación E2E de microservicios
+## Monolito (opcional)
 
-El stack completo (gateway + 4 microservicios + SQLite) se levanta y se certifica con:
+El directorio `src/` contiene una versión monolítica de la misma API (NestJS con
+almacenamiento en memoria). Se ejecuta en local con `pnpm start:dev` en el puerto
+3000; detén el stack de microservicios antes de arrancarlo.
 
 ```bash
-pnpm stack:up        # docker compose up -d --build
-pnpm stack:wait      # espera a que los 5 servicios estén healthy
-pnpm test:e2e:micro  # pruebas E2E certificadas contra el gateway
-pnpm stack:down      # detiene y elimina los volúmenes
+pnpm start:dev   # http://localhost:3000/graphql
+pnpm test        # unitarios
+pnpm test:e2e    # E2E del monolito
 ```
 
-Arquitectura, correcciones de base de datos y alcance de las pruebas en
+---
+
+Arquitectura, decisiones y alcance de las pruebas en
 [docs/MICROSERVICES.md](docs/MICROSERVICES.md).
