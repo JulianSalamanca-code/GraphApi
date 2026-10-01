@@ -39,6 +39,10 @@ script:post-response {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Ejecuta los pasos en orden; cada uno captura los id para los siguientes.
 }

@@ -37,6 +37,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   metodo es obligatorio. estado es opcional (por defecto PENDIENTE).
   El monto no está limitado al total de la orden.

@@ -41,3 +41,7 @@ script:post-response {
     bru.setVar("flowPedidoId", data.crearPedido.id);
   }
 }
+
+assert {
+  res.status: eq 200
+}

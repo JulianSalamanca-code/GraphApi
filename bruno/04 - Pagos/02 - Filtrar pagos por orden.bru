@@ -28,6 +28,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Devuelve únicamente los pagos de la orden indicada.
   Omitir ordenId o enviarlo como null devuelve todos los pagos.

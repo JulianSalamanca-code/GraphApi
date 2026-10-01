@@ -39,6 +39,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Se eliminan las dependencias antes que las entidades padre.
   Devuelve true en cada campo si todo termina sin errores.

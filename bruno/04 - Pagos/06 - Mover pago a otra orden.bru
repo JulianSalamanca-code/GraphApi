@@ -30,6 +30,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   El pago se mueve a otra orden existente. No modifica totales.
 }

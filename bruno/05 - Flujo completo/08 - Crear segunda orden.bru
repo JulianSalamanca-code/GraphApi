@@ -35,6 +35,10 @@ script:post-response {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Sirve para probar el movimiento de un pedido a otra orden del mismo propietario.
 }

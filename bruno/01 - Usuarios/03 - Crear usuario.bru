@@ -34,6 +34,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   El email se almacena en minúsculas y debe ser único.
   telefono es opcional. Guarda el id devuelto para las siguientes operaciones.

@@ -30,6 +30,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   usuarioId debe coincidir con el propietario de la orden.
   Esperado: creación rechazada y el pedido no se crea.

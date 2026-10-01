@@ -22,6 +22,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Usa una orden que tenga pedidos o pagos.
   Esperado: errors con "pedidos asociados" o "pagos asociados" y data: null.

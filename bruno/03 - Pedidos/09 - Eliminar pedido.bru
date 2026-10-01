@@ -22,6 +22,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Devuelve true y recalcula el total de la orden.
 }

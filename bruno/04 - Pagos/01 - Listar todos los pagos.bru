@@ -29,6 +29,10 @@ body:graphql {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Sin filtros, devuelve todos los pagos.
   El monto no se compara automáticamente con el total de la orden.

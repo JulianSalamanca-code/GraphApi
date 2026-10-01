@@ -28,6 +28,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   El pedido se mueve de la primera a la segunda orden; se recalculan los totales.
 }

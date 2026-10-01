@@ -27,6 +27,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Ejecútalo dos veces. La segunda debe responder con data: null y
   errors[0].message: "Ya existe un usuario con ese email.".

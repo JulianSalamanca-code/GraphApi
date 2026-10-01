@@ -27,6 +27,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Los campos obligatorios no pueden quedar vacíos.
   Esperado: data: null y errors con "Bad Request".

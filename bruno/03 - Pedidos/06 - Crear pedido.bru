@@ -40,6 +40,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   usuarioId debe coincidir con el propietario de la orden.
   El subtotal se calcula automáticamente (cantidad x precioUnitario) y

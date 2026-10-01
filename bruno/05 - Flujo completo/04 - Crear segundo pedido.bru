@@ -41,6 +41,10 @@ script:post-response {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   El total de la orden pasa a ser 30 (25 + 5).
 }

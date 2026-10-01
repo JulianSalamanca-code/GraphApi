@@ -16,6 +16,10 @@ body:graphql {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Verifica que el endpoint POST /graphql responde.
   Esperado: data.__typename = "Query".

@@ -22,6 +22,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Usa un usuario que tenga órdenes o pedidos.
   Esperado: errors de conflicto y data: null.

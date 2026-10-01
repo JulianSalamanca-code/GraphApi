@@ -42,6 +42,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Verifica los totales tras los movimientos y actualizaciones anteriores.
 }

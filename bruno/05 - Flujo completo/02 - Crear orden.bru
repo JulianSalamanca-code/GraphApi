@@ -35,3 +35,7 @@ script:post-response {
     bru.setVar("flowOrdenId", data.crearOrden.id);
   }
 }
+
+assert {
+  res.status: eq 200
+}

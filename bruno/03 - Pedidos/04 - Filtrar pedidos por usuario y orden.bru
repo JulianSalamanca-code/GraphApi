@@ -28,6 +28,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Los filtros se combinan con AND. Omitir un filtro o enviar null equivale a no filtrar.
 }

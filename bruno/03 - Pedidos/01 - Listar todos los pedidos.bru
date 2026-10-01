@@ -27,6 +27,10 @@ body:graphql {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Sin filtros, devuelve todos los pedidos.
   Subtotales: cantidad x precioUnitario.

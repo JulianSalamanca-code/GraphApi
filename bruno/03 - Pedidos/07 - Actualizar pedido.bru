@@ -35,6 +35,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Al cambiar cantidad o precio se recalcula el subtotal y el total de la orden.
   Una descripción vacía o solo espacios se convierte en null.

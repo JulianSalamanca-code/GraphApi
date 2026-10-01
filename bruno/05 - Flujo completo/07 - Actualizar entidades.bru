@@ -51,6 +51,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Al cambiar la cantidad del pedido a 4, su subtotal pasa a 50 y el total de la orden a 55.
 }

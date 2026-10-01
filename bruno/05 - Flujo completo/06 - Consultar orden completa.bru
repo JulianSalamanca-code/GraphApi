@@ -62,6 +62,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Ejecuta los pasos que se deseen en orden; los id se toman de los pasos previos.
 }

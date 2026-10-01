@@ -30,6 +30,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Si el nueva orden no existe, la entidad conserva todos sus valores anteriores.
   Esperado: error por cada adaptación con orden inexistente.

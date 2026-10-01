@@ -30,6 +30,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Esperado: data: null y errors con "Bad Request".
   Sustituye los ids por entidades reales.

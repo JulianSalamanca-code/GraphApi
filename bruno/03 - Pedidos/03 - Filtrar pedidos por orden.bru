@@ -31,6 +31,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Devuelve los pedidos de esa orden. Sustituye el id por un UUID real.
 }

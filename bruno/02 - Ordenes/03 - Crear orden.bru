@@ -37,6 +37,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   estado es opcional (PENDIENTE, PAGADA, COMPLETADA o CANCELADA).
   Si se omite, se crea como PENDIENTE. El propietario queda fijado.

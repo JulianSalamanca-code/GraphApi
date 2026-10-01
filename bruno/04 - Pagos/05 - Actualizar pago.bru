@@ -34,6 +34,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Solo modifica los campos enviados. referencia: null elimina la referencia.
   No modifica el total de la orden.

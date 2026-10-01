@@ -22,6 +22,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Devuelve true si el usuario no tiene pedidos ni órdenes.
   Si tiene dependencias, responde con un error de conflicto.

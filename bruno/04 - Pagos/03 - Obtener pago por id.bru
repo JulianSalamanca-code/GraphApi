@@ -36,6 +36,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Sustituye el id por el UUID de un pago existente.
 }

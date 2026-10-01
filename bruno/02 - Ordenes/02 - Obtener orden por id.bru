@@ -49,6 +49,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   Sustituye el id por el UUID de una orden existente.
   total es la suma de los subtotales de sus pedidos.

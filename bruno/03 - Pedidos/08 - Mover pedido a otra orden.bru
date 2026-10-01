@@ -33,6 +33,10 @@ body:graphql:vars {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 docs {
   La nueva orden debe pertenecer al mismo usuario. Se recalculan los
   totales de ambas órdenes.

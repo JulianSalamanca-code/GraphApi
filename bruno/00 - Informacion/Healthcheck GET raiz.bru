@@ -10,6 +10,11 @@ get {
   auth: none
 }
 
+assert {
+  res.status: eq 200
+  res.body: contains Hello World!
+}
+
 docs {
   Endpoint auxiliar de NestJS. Fuera del dominio de la API.
   Esperado: status 200 con el texto "Hello World!".
