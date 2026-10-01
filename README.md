@@ -147,3 +147,17 @@ Cada servicio tiene su propio directorio bajo `services/` con su Dockerfile y c�
 cd services/<servicio>
 # Sigue las instrucciones del README de cada servicio
 ```
+
+## Certificación E2E de microservicios
+
+El stack completo (gateway + 4 microservicios + SQLite) se levanta y se certifica con:
+
+```bash
+pnpm stack:up        # docker compose up -d --build
+pnpm stack:wait      # espera a que los 5 servicios estén healthy
+pnpm test:e2e:micro  # pruebas E2E certificadas contra el gateway
+pnpm stack:down      # detiene y elimina los volúmenes
+```
+
+Arquitectura, correcciones de base de datos y alcance de las pruebas en
+[docs/MICROSERVICES.md](docs/MICROSERVICES.md).

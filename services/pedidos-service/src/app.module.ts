@@ -1,3 +1,4 @@
+import { mkdirSync } from 'node:fs';
 import { Module } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
@@ -5,6 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { PedidosModule } from './pedidos.module';
 import { Pedido } from './pedidos.model';
 import { HealthController } from './health.controller';
+
+// DB_PATH es el directorio de datos (volumen en Docker). El fichero SQLite se
+// construye a partir de él para no confundir directorio con fichero.
+const dbDir = process.env.DB_PATH || './data';
+mkdirSync(dbDir, { recursive: true });
 
 @Module({
   imports: [
@@ -16,7 +22,7 @@ import { HealthController } from './health.controller';
     }),
     TypeOrmModule.forRoot({
       type: 'better-sqlite3',
-      database: process.env.DB_PATH || './pedidos.db',
+      database: `${dbDir}/pedidos.db`,
       entities: [Pedido],
       synchronize: true,
     }),

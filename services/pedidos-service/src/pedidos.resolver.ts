@@ -1,4 +1,4 @@
-import { Resolver, Query, Mutation, Args, ID, Int, Float } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, ID } from '@nestjs/graphql';
 import { PedidosService } from './pedidos.service';
 import { Pedido, CrearPedidoInput, ActualizarPedidoInput } from './pedidos.model';
 
@@ -8,8 +8,8 @@ export class PedidosResolver {
 
   @Query(() => [Pedido])
   async pedidos(
-    @Args('usuarioId', { nullable: true }) usuarioId?: string,
-    @Args('ordenId', { nullable: true }) ordenId?: string,
+    @Args('usuarioId', { type: () => ID, nullable: true }) usuarioId?: string,
+    @Args('ordenId', { type: () => ID, nullable: true }) ordenId?: string,
   ) {
     return this.pedidosService.obtenerTodos(usuarioId, ordenId);
   }

@@ -16,7 +16,7 @@ spring:
     graphiql:
       enabled: true
     schema:
-      locations: classpath:graphql/
+      file-extensions: .graphql
   cloud:
     consul:
       host: ${CONSUL_HOST:localhost}

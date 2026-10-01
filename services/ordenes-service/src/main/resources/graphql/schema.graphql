@@ -1,0 +1,37 @@
+scalar DateTime
+
+enum EstadoOrden {
+  PENDIENTE
+  PAGADA
+  COMPLETADA
+  CANCELADA
+}
+
+type Orden {
+  id: ID!
+  estado: EstadoOrden!
+  usuarioId: ID!
+  total: Float!
+  creadoEn: DateTime!
+  actualizadoEn: DateTime!
+}
+
+input CrearOrdenInput {
+  usuarioId: ID!
+  estado: EstadoOrden
+}
+
+input ActualizarOrdenInput {
+  estado: EstadoOrden
+}
+
+type Query {
+  ordenes: [Orden!]!
+  orden(id: ID!): Orden
+}
+
+type Mutation {
+  crearOrden(input: CrearOrdenInput!): Orden!
+  actualizarOrden(id: ID!, input: ActualizarOrdenInput!): Orden!
+  eliminarOrden(id: ID!): Boolean!
+}

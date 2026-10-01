@@ -1,11 +1,26 @@
+scalar DateTime
+
 type Usuario {
   id: ID!
   nombre: String!
   email: String!
   telefono: String
   activo: Boolean!
-  creadoEn: String!
-  actualizadoEn: String!
+  creadoEn: DateTime!
+  actualizadoEn: DateTime!
+}
+
+input CrearUsuarioInput {
+  nombre: String!
+  email: String!
+  telefono: String
+}
+
+input ActualizarUsuarioInput {
+  nombre: String
+  email: String
+  telefono: String
+  activo: Boolean
 }
 
 type Query {
@@ -14,7 +29,7 @@ type Query {
 }
 
 type Mutation {
-  crearUsuario(nombre: String!, email: String!, telefono: String): Usuario!
-  actualizarUsuario(id: ID!, nombre: String, email: String, telefono: String, activo: Boolean): Usuario!
+  crearUsuario(input: CrearUsuarioInput!): Usuario!
+  actualizarUsuario(id: ID!, input: ActualizarUsuarioInput!): Usuario!
   eliminarUsuario(id: ID!): Boolean!
 }

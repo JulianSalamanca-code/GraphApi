@@ -15,13 +15,18 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "oxlint --type-aware src/ test/ scripts/",
+    "lint": "oxlint --type-aware src/ test/ scripts/ e2e/",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
-    "test:e2e": "vitest run --config ./vitest.config.e2e.ts"
+    "test:e2e": "vitest run --config ./vitest.config.e2e.ts",
+    "test:e2e:micro": "vitest run --config ./vitest.config.microservices.ts",
+    "stack:up": "docker compose up -d --build",
+    "stack:down": "docker compose down -v",
+    "stack:wait": "node scripts/wait-for-stack.mjs",
+    "stack:logs": "docker compose logs -f"
   },
   "dependencies": {
     "@apollo/server": "^5.5.1",

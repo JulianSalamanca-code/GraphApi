@@ -37,7 +37,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3001/actuator/health"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
 
   ordenes-service:
     build:
@@ -61,7 +62,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3002/actuator/health"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
 
   pedidos-service:
     build:
@@ -73,6 +75,10 @@ services:
     environment:
       - CONSUL_HOST=consul
       - SERVICE_PORT=3003
+      - PORT=3003
+      - DB_PATH=/data
+    volumes:
+      - pedidos-data:/data
     networks:
       - mrcatfood-network
     depends_on:
@@ -82,7 +88,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3003/health"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   pagos-service:
     build:
@@ -94,6 +101,7 @@ services:
     environment:
       - CONSUL_HOST=consul
       - SERVICE_PORT=3004
+      - PORT=3004
       - DB_PATH=/data
     volumes:
       - pagos-data:/data
@@ -106,7 +114,8 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:3004/health"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 30s
 
   gateway:
     build: ./gateway
@@ -115,6 +124,10 @@ services:
       - "3000:3000"
     environment:
       - PORT=3000
+      - USUARIOS_URL=http://usuarios-service:3001/graphql
+      - ORDENES_URL=http://ordenes-service:3002/graphql
+      - PEDIDOS_URL=http://pedidos-service:3003/graphql
+      - PAGOS_URL=http://pagos-service:3004/graphql
     networks:
       - mrcatfood-network
     depends_on:
@@ -127,10 +140,11 @@ services:
       pagos-service:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/graphql"]
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
       interval: 15s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 20s
 
 networks:
   mrcatfood-network:
